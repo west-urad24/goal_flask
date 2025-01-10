@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カテゴリの割合</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>目標カテゴリの割合</h1>
+    <img src="data:image/png;base64,{{ graph_data }}" alt="グラフ">
+    <br>
+    <a href="{{ url_for('index') }}">目標リストに戻る</a>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>目標リスト管理</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>目標リスト</h1>
+
+    <!-- 新しい目標を追加するフォーム -->
+    <div class="new-form">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <label>{{ form.description.label }}:</label> {{ form.description() }} <br>
+            <label>{{ form.category.label }}:</label> {{ form.category() }} <br>
+            <label>{{ form.date.label }}:</label> {{ form.date() }} <br>
+            <label>{{ form.status.label }}:</label> {{ form.status() }} <br>
+            {{ form.submit() }}
+        </form>
+    </div>
+    
+    <h2>目標一覧</h2>
+    <table>
+        <!-- フィルタリングフォーム -->
+        <div class="filter-form">
+            <form method="GET" action="{{ url_for('index') }}">
+            {{ filter_form.hidden_tag() }}
+            <thead>
+                <tr>
+                    <th>番号</th>
+                    <th>目標</th>
+                    <th><label>{{ filter_form.category.label }}:</label> {{ filter_form.category() }} {{ filter_form.submit() }}</th>
+                    <th><label>{{ filter_form.date.label }}:</label> {{ filter_form.date() }} {{ filter_form.submit() }}</th>
+                    <th><label>{{ filter_form.status.label }}:</label> {{ filter_form.status() }} {{ filter_form.submit() }}</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            </form>
+        </div>
+
+        <tbody>
+            {% for goal in goals %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ goal.description }}</td>
+                <td>{{ goal.category }}</td>
+                <td>{{ goal.date }}</td>
+                <td>{{ goal.status }}</td>
+                <td>
+                    <a href="{{ url_for('edit', id=goal.id) }}">編集</a> | 
+                    <a href="{{ url_for('delete', id=goal.id) }}" onclick="return confirm('本当に削除しますか？')">削除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if editing %}
+    <h2>目標の編集</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <label>{{ form.description.label }}:</label> {{ form.description() }} <br>
+        <label>{{ form.category.label }}:</label> {{ form.category() }} <br>
+        <label>{{ form.date.label }}:</label> {{ form.date() }} <br>
+        <label>{{ form.status.label }}:</label> {{ form.status() }} <br>
+        {{ form.submit() }}
+    </form>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('graph') }}">カテゴリの棒グラフ</a>
+</body>
+</html>
