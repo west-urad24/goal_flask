@@ -53,11 +53,11 @@ def index():
     if status_filter != 'all':
         query = query.filter(Goal.status == status_filter)
     if date_filter:
-        query = query.filter(Goal.date.like(f"%{date_filter}%"))
+        query = query.filter(Goal.date.like(f"%{date_filter}%")) # 任意の文字が含まれていたら
 
     goals = query.all()
 
-    if form.validate_on_submit():  # 新規目標の追加
+    if form.validate_on_submit():  # 新規目標の追加。保存後、バリデーションがOKならば
         goal = Goal(description=form.description.data, category=form.category.data, status=form.status.data ,date=form.date.data)
         db.session.add(goal)
         db.session.commit()
@@ -75,10 +75,10 @@ def delete(id):
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
     goal = Goal.query.get_or_404(id)  # 番号に一致する目標を編集
-    form = GoalForm(obj=goal)
+    form = GoalForm(obj=goal) # 編集するフォーム
     filter_form = FilterForm()  # フィルタリング用フォーム
 
-    if form.validate_on_submit():
+    if form.validate_on_submit(): # 保存後、バリデーションがOKならば
         goal.description = form.description.data
         goal.category = form.category.data
         goal.status = form.status.data
@@ -86,6 +86,7 @@ def edit(id):
         db.session.commit()  # dbに保存
         return redirect(url_for('index'))
     
+    # 編集中に全ての目標を表示するためにgoals、フィルタリングのフォーム(フィルタリング中も編集するかもしれないから)、編集中のgoal、フラグのedittingをrender
     return render_template('main.html', form=form, filter_form=filter_form, goals=Goal.query.all(), editing=True, goal=goal)
 
 # グラフ - カテゴリ別の棒グラフを描画
@@ -93,6 +94,7 @@ def edit(id):
 def graph():
     categories = Goal.query.with_entities(Goal.category, db.func.count(Goal.category)).group_by(Goal.category).all()
 
+    # [[趣味,2],[将来,3]]
     labels = [category[0] for category in categories]
     values = [category[1] for category in categories]
     
