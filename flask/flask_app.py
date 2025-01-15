@@ -94,6 +94,15 @@ def edit(id):
 def graph():
     categories = Goal.query.with_entities(Goal.category, db.func.count(Goal.category)).group_by(Goal.category).all()
 
+
+
+
+
+
+
+
+
+
     # [[趣味,2],[将来,3]]
     labels = [category[0] for category in categories]
     values = [category[1] for category in categories]
